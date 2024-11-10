@@ -1,0 +1,54 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Update Password</title>
+    <style>
+        /* You can style your form here */
+    </style>
+</head>
+<body>
+    <h2>Update Password</h2>
+    <form id="updateForm">
+        <label for="newPassword">New Password</label>
+        <input type="password" id="newPassword" name="newPassword" required>
+        <button type="submit">Update</button>
+    </form>
+
+    <script>
+        // Get the password ID from the query parameter
+        const urlParams = new URLSearchParams(window.location.search);
+        const passwordId = urlParams.get('passwordId');
+
+        const form = document.getElementById('updateForm');
+        form.onsubmit = function(event) {
+            event.preventDefault();
+            
+            // Get the new password entered by the user
+            const newPassword = document.getElementById('newPassword').value;
+
+            // Send the new password to the server to update
+            fetch(`http://localhost:5001/updatePassword/${passwordId}`, {
+                method: 'PUT',
+                headers: {
+                    'Content-Type': 'application/json'
+                },
+                body: JSON.stringify({ password: newPassword })
+            })
+            .then(response => {
+                if (response.ok) {
+                    alert('Password updated successfully');
+                    // Close the iframe and refresh the page
+                    window.parent.location.reload();
+                } else {
+                    alert('Failed to update password');
+                }
+            })
+            .catch(error => {
+                console.error('Error updating password:', error);
+            });
+        };
+    </script>
+</body>
+</html>
